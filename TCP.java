@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 
+
 public class TCP {
     public static void main(String args []) {
         if (args.length == 12) {
@@ -18,10 +19,12 @@ public class TCP {
                 int sws = Integer.parseInt(args[11]);
                 try {
                     DatagramSocket socket = new DatagramSocket(port_num);
-                    File file = new File(file_name);
-                    BufferedInputStream data = new BufferedInputStream(new FileInputStream(file));
-                    byte[] buffer = data.readAllBytes();
                     InetAddress inet_remote_ip = InetAddress.getByName(remote_ip);
+                    // process file
+                    File file = new File(file_name);
+                    FileInputStream data = new FileInputStream(file);
+                    byte[] buffer = new byte[(int)file.length()];
+                    data.read(buffer, 0, (int) file.length());
                     Client client = new Client(socket, port_num, inet_remote_ip, remote_port, buffer, mtu, sws);
                 } catch (IOException e) {
                     System.out.println("Fail to create a socket");
@@ -36,6 +39,14 @@ public class TCP {
                 int port_num = Integer.parseInt((args[1]));
                 int mtu = Integer.parseInt(args[3]);
                 int sws = Integer.parseInt(args[5]);
+                try {
+                    DatagramSocket socket = new DatagramSocket(port_num);
+                    Server server = new Server(port_num, mtu, sws, socket);
+                }
+                catch(IOException e) {
+                    System.out.println("Fail to create a socket");
+                }
+
             }
         }
     }
