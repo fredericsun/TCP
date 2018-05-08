@@ -162,7 +162,7 @@ class Client_OutThread extends Thread {
             byte[] packet_data = toByteArray(Client.nextbytetosend, Client.ack_num, timestamp, length,
                     all_zero, checksum, Client.sender_buffer.get(Client.lastsent + 1));
             DatagramPacket packet = new DatagramPacket(packet_data, packet_data.length);
-            System.out.println("Window Size "+ Client.sws);
+            //System.out.println("Window Size "+ Client.sws);
             try {
                 if (Client.sws >= (data_length + 24)) {
                 		System.out.println("Next Byte to Send "+ Client.nextbytetosend);
@@ -337,7 +337,9 @@ class Client_InThread extends Thread {
                         // the ACK is the data ACK
                         System.out.print("");
                         System.out.printf("rcv %d -A-- %d %d %d \n", System.nanoTime(), getSequenceNumber(ack_data), 0, getAcknowledgment(ack_data));
+                        synchronized(Client.sws) {
                         Client.sws = Client.sws + mtu_data + 24;
+                        }
                         int ack_received = getAcknowledgment(ack_data);
                         if (Client.last_ack_num_received == ack_received) {
                             Client.duplicate_ack++;
