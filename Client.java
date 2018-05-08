@@ -149,7 +149,7 @@ class Client_OutThread extends Thread {
             }
             int data_length;
             long timestamp = System.nanoTime();
-            System.out.println("Next Byte to Send "+ Client.nextbytetosend);
+            
             short checksum = computeChecksum(Client.nextbytetosend);
             //short checksum = 0;
             if (Client.lastsent == Client.sender_buffer.size() - 2) {
@@ -162,8 +162,10 @@ class Client_OutThread extends Thread {
             byte[] packet_data = toByteArray(Client.nextbytetosend, Client.ack_num, timestamp, length,
                     all_zero, checksum, Client.sender_buffer.get(Client.lastsent + 1));
             DatagramPacket packet = new DatagramPacket(packet_data, packet_data.length);
+            System.out.println("Window Size "+ Client.sws);
             try {
                 if (Client.sws >= (data_length + 24)) {
+                		System.out.println("Next Byte to Send "+ Client.nextbytetosend);
                     //Timer timer = new Timer(System.nanoTime(), Client.nextbytetosend, Client.lastsent, Client.lastacked);
                     System.out.printf("snd %d ---D %d %d %d \n", timestamp, Client.nextbytetosend, data_length, Client.ack_num);
                     Client.amount_data_transferred += data_length;
