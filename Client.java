@@ -51,6 +51,7 @@ public class Client {
         this.inet_remote_ip  = inet_remote_ip ;
         this.remote_port = remote_port;
         this.mtu_data = mtu - 24;
+        this.cur_time = System.currentTimeMillis();
 
         //variables that need to be shared
         socket.connect(inet_remote_ip, remote_port);
@@ -89,6 +90,8 @@ public class Client {
         Client_InThread in = new Client_InThread(port_num, mtu_data);
         out.start();
         in.start();
+
+
     }
 }
 
@@ -315,7 +318,7 @@ class Client_InThread extends Thread {
                 System.out.print("");
                 byte[] data_received = new byte[24];
                 DatagramPacket packet_received = new DatagramPacket(data_received, data_received.length);
-                System.out.println("Before the recieve ");
+                System.out.println("Before the recieve " + Client.nextbytetosend);
                 Client.socket.receive(packet_received);
                 System.out.println("Packet received ; moving forwards"); 
                 byte[] ack_data = packet_received.getData();
