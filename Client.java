@@ -149,7 +149,7 @@ class Client_OutThread extends Thread {
             }
             int data_length;
             long timestamp = System.nanoTime();
-            System.out.print("Next Byte to Send "+ Client.nextbytetosend);
+            System.out.println("Next Byte to Send "+ Client.nextbytetosend);
             short checksum = computeChecksum(Client.nextbytetosend);
             //short checksum = 0;
             if (Client.lastsent == Client.sender_buffer.size() - 2) {
