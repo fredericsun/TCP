@@ -136,7 +136,7 @@ class Client_OutThread extends Thread {
 
         // Data transmit
         while (Client.lastacked < (Client.sender_buffer.size() - 1)) {
-			System.out.println("Data begin to send: " + Client.lastacked + " Buffer Size" + Client.sender_buffer.size() );
+			//System.out.println("Data begin to send: " + Client.lastacked + " Buffer Size" + Client.sender_buffer.size() );
 	        	if (Client.lastacked > Client.lastsent) {
 	        		Client.lastsent = Client.lastacked;
 	            synchronized(Client.nextbytetosend) {
