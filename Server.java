@@ -49,9 +49,9 @@ class Server_InThread extends Thread {
     public void run() {
         boolean loop = true;
         while(loop) {
-            //System.out.print("");
+            System.out.print("");
             try {
-                //System.out.print("");
+                System.out.print("");
                 byte[] data_received = new byte[Server.mtu];
                 DatagramPacket packet = new DatagramPacket(data_received, data_received.length);
                 Server.socket.receive(packet);
@@ -73,24 +73,28 @@ class Server_InThread extends Thread {
                     loop = false;
                 }
                 else {
-                    //System.out.print("");
+                    System.out.print("");
                     int seq_num = getSequenceNumber(data);
                     short curr_checksum = getChecksum(data);
                     System.out.printf("rcv %d ---D %d %d %d \n", System.nanoTime(), getSequenceNumber(data), getDataLength(data), 1);
                     if (computeChecksum(seq_num) != curr_checksum) {
                         // checksum corrupts then drop the packet
                         Server.no_wrong_checksum ++;
+                        synchronized(Client.sws) {
                         Client.sws = Client.sws + data.length;
-                        //System.out.println("Drop the received packets checksum");
+                        }
+                        System.out.println("Drop the received packets checksum");
                         continue;
                     }
                     int position = (seq_num - 1) / (Server.mtu - 24);
                     if (Server.receiver_buffer.containsKey(position)) {
-                        // received unordered data then drop the packet
+                        // received repeated data then drop the packet
                         Server.no_out_of_sequence ++;
-                        //System.out.println("Drop the received packets " + getSequenceNumber(data));
-                        Client.sws = Client.sws + data.length;
-                        //System.out.println("Window " + Client.sws);
+                        System.out.println("Drop the received packets " + getSequenceNumber(data));
+                        synchronized(Client.sws) {
+                        Client.sws = Client.sws + data.length; //FIX ME - Add synchronization between threads
+                        }
+                        System.out.println("Window " + Client.sws);
                         continue;
                     }
                     Server.amount_data_received += getDataLength(data);
@@ -98,7 +102,7 @@ class Server_InThread extends Thread {
                     Server.receiver_buffer.put(position, data);
                     Server.lastreceived = position;
 
-                    //System.out.println("lastacked and lastreceived " + Server.lastacked + Server.lastreceived);
+                    System.out.println("lastacked and lastreceived " + Server.lastacked + Server.lastreceived);
                 }
             }
             catch (IOException e) {
@@ -220,7 +224,7 @@ class Server_OutThread extends Thread {
     public void run() {
         // hand-shaking
         while (Server.handshake) {
-            //System.out.print("");
+            System.out.print("");
             if (Server.handshake_received) {
                 System.out.print("");
                 long timestamp;

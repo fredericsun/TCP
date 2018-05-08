@@ -15,14 +15,14 @@ public class Client {
     public int mtu_data;
 
     public static byte[] buffer;
-    public static int sws;
+    public static Integer sws;
     public static DatagramSocket socket;
     public static List<byte[]> sender_buffer = new ArrayList<>();
     public static int last_ack_num_received = 0;
     public static int counter = 0; // fast retransmit counter
-    public static int lastacked = -1; // pointer for sender_buffer, point to nth packet (not include 0)
-    public static int lastsent = -1; // pointer for sender_buffer;
-    public static int nextbytetosend = 0; // sequence number
+    public static Integer lastacked = -1; // pointer for sender_buffer, point to nth packet (not include 0)
+    public static Integer lastsent = -1; // pointer for sender_buffer;
+    public static Integer nextbytetosend = 0; // sequence number
     public static int ack_num = 0; // acknowledgement number
 
     // global filed for timeout and related computation;
@@ -132,11 +132,13 @@ class Client_OutThread extends Thread {
         }
 
         // Data transmit
-        while (Client.lastacked != (Client.sender_buffer.size() - 1)) {
+        while (Client.lastacked <= (Client.sender_buffer.size() - 1)) {
             System.out.print("");
             if (Client.lastacked > Client.lastsent) {
                 Client.lastsent = Client.lastacked;
-                Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+                synchronized(Client.nextbytetosend) {
+                		Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+                }
             }
             int curr = Client.lastsent;
             if (curr >= Client.sender_buffer.size() - 1) {
@@ -163,8 +165,12 @@ class Client_OutThread extends Thread {
                     System.out.printf("snd %d ---D %d %d %d \n", timestamp, Client.nextbytetosend, data_length, Client.ack_num);
                     Client.amount_data_transferred += data_length;
                     Client.num_packet_sent++;
+                    synchronized(Client.sws) {
                     Client.sws = Client.sws - data_length - 24;
+                    }
+                    synchronized(Client.nextbytetosend) {
                     Client.nextbytetosend += data_length;
+                    }
                     Client.lastsent += 1;
                     Client.socket.send(packet);
                     timer.start();
@@ -336,16 +342,26 @@ class Client_InThread extends Thread {
                             Client.counter = 0;
                         }
                         Client.last_ack_num_received = ack_received;
+                        synchronized(Client.lastacked) {
                         Client.lastacked = (int)Math.ceil((double)(ack_received - 1) / mtu_data) - 1;
+                        }
                         if (Client.counter == 3) {
                             Client.counter = 0;
                             Client.retransmission ++;
+                            synchronized(Client.lastsent) {
                             Client.lastsent = Client.lastacked;
+                            }
+                            synchronized(Client.nextbytetosend) {
                             Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+                            }
                         }
                         if (Client.lastacked > Client.lastsent) {
+                        	 synchronized(Client.lastsent) {
                             Client.lastsent = Client.lastacked;
+                        	 }
+                        	 synchronized(Client.nextbytetosend) {
                             Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+                        }
                         }
                     }
                 }
