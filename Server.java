@@ -77,15 +77,16 @@ class Server_InThread extends Thread {
                     System.out.print("");
                     int seq_num = getSequenceNumber(data);
                     short curr_checksum = getChecksum(data);
+                    System.out.print("Sequence Number recieved"+ seq_num);
                     System.out.printf("rcv %d ---D %d %d %d \n", System.nanoTime(), getSequenceNumber(data), getDataLength(data), 1);
                     if (computeChecksum(seq_num) != curr_checksum) {
                         // checksum corrupts then drop the packet
-                        Server.no_wrong_checksum ++;
-                        synchronized(Client.sws) {
-                        Client.sws = Client.sws + data.length;
-                        }
-                        System.out.println("Drop the received packets checksum");
-                        continue;
+//                        Server.no_wrong_checksum ++;
+//                        synchronized(Client.sws) {
+//                        		Client.sws = Client.sws + data.length;
+//                        }
+//                        System.out.println("Drop the received packets checksum");
+//                        continue;
                     }
                     int position = (seq_num - 1) / (Server.mtu - 24);
                     if (Server.receiver_buffer.containsKey(position)) {
