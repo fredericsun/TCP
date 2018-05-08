@@ -136,18 +136,13 @@ class Client_OutThread extends Thread {
 
         // Data transmit
         while (Client.lastacked <= (Client.sender_buffer.size() - 1)) {
-            System.out.print("");
-            
-                
-
-                	if (Client.lastacked > Client.lastsent) {
-                		Client.lastsent = Client.lastacked;
-	                synchronized(Client.nextbytetosend) {
-	                		Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
-	                }
+			System.out.print("Data begin to send: " + Client.lastacked);
+	        	if (Client.lastacked > Client.lastsent) {
+	        		Client.lastsent = Client.lastacked;
+	            synchronized(Client.nextbytetosend) {
+	            		Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
 	            }
-
-
+	        }
             int curr = Client.lastsent;
             if (curr >= Client.sender_buffer.size() - 1) {
                 continue;
@@ -168,7 +163,6 @@ class Client_OutThread extends Thread {
             DatagramPacket packet = new DatagramPacket(packet_data, packet_data.length);
             try {
                 if (Client.sws >= (data_length + 24)) {
-                    System.out.print("");
                     //Timer timer = new Timer(System.nanoTime(), Client.nextbytetosend, Client.lastsent, Client.lastacked);
                     System.out.printf("snd %d ---D %d %d %d \n", timestamp, Client.nextbytetosend, data_length, Client.ack_num);
                     Client.amount_data_transferred += data_length;
@@ -197,7 +191,7 @@ class Client_OutThread extends Thread {
 
         // Termination
         if (Client.lastacked == (Client.sender_buffer.size() - 1)) {
-            System.out.print("");
+            System.out.print("begin to fin");
             int data_length = 0; // length of the data
             //BitSet flag = new BitSet(8); // flag information, index 0, 1, 2, 3 are respectively SYN, FIN, ACK, DATA;
             //flag.set(1);
@@ -353,6 +347,7 @@ class Client_InThread extends Thread {
                         synchronized(Client.lastacked) {
                         Client.lastacked = (int)Math.ceil((double)(ack_received - 1) / mtu_data) - 1;
                         }
+                        System.out.println("lastacked " + Client.lastacked);
                         if (Client.counter == 3) {
                             Client.counter = 0;
                             Client.retransmission ++;
