@@ -24,6 +24,8 @@ public class Client {
     public static Integer lastsent = -1; // pointer for sender_buffer;
     public static Integer nextbytetosend = 0; // sequence number
     public static int ack_num = 0; // acknowledgement number
+    public static Integer expectedAckNum = -1;
+    public static Boolean isRetransmitted = false;
 
     // global filed for timeout and related computation;
     public static long timeout = (long)(5 * Math.pow(10, 9)); // unit is nanosecond;
@@ -119,6 +121,7 @@ class Client_OutThread extends Thread {
                 System.out.printf("snd %d S--- %d %d %d \n", timestamp, Client.nextbytetosend, 0, Client.ack_num);
                 Client.num_packet_sent++;
                 Client.socket.send(packet);
+             
                 try {
                     Thread.sleep(5000);
                 }
@@ -134,12 +137,17 @@ class Client_OutThread extends Thread {
         // Data transmit
         while (Client.lastacked <= (Client.sender_buffer.size() - 1)) {
             System.out.print("");
-            if (Client.lastacked > Client.lastsent) {
-                Client.lastsent = Client.lastacked;
-                synchronized(Client.nextbytetosend) {
-                		Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
-                }
-            }
+            
+                
+
+                	if (Client.lastacked > Client.lastsent) {
+                		Client.lastsent = Client.lastacked;
+	                synchronized(Client.nextbytetosend) {
+	                		Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+	                }
+	            }
+
+
             int curr = Client.lastsent;
             if (curr >= Client.sender_buffer.size() - 1) {
                 continue;
@@ -354,15 +362,19 @@ class Client_InThread extends Thread {
                             synchronized(Client.nextbytetosend) {
                             Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
                             }
+                            synchronized(Client.isRetransmitted) {
+                            	Client.isRetransmitted = true;
+                            }
                         }
-                        if (Client.lastacked > Client.lastsent) {
-                        	 synchronized(Client.lastsent) {
-                            Client.lastsent = Client.lastacked;
-                        	 }
-                        	 synchronized(Client.nextbytetosend) {
-                            Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
-                        }
-                        }
+//                        if (Client.lastacked > Client.lastsent) {
+//                        	 synchronized(Client.lastsent) {
+//                            Client.lastsent = Client.lastacked;
+//                        	 }
+//                        	 synchronized(Client.nextbytetosend) {
+//                            Client.nextbytetosend = (Client.lastsent + 1) * mtu_data + 1;
+//                       
+//                        }
+//                        }
                     }
                 }
             }

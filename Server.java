@@ -22,6 +22,7 @@ public class Server {
     public static HashMap<Integer, byte[]> receiver_buffer = new HashMap<>();
     public static int lastacked = -1;
     public static int lastreceived = -1;
+    public static Boolean dataReceived = false;
 
     // output information
     public static int amount_data_received = 0;
@@ -101,6 +102,7 @@ class Server_InThread extends Thread {
                     Server.no_packets_received += 1;
                     Server.receiver_buffer.put(position, data);
                     Server.lastreceived = position;
+                    Server.dataReceived = true;
 
                     System.out.println("lastacked and lastreceived " + Server.lastacked + Server.lastreceived);
                 }
@@ -276,6 +278,7 @@ class Server_OutThread extends Thread {
                 Server.socket.close();
                 break;
             }
+            if (Server.dataReceived) {
             if (Server.lastacked < Server.lastreceived) {
                 // data transmit
                 int origin = Server.lastacked;
@@ -284,9 +287,9 @@ class Server_OutThread extends Thread {
                 }
                 Server.lastacked = Server.lastacked - 1;
                 int nexttoack = Server.lastacked;
-                if (nexttoack == origin) {
-                    continue;
-                }
+//                if (nexttoack == origin) {
+//                    continue;
+//                }
                 long timestamp;
                 int seq_num = 0;
                 int ack_num = 0;
@@ -303,11 +306,14 @@ class Server_OutThread extends Thread {
                 DatagramPacket packet = new DatagramPacket(packet_data, packet_data.length);
                 try {
                     Server.socket.send(packet);
+                    Server.dataReceived = false;
                     System.out.printf("snd %d -A-- %d %d %d \n", System.nanoTime(), seq_num, 0, ack_num);
                 }
                 catch (IOException e) {
                     System.out.println("Data send failure");
                 }
+            }
+            
             }
             else {
                 System.out.print("");
