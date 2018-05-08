@@ -26,6 +26,10 @@ public class Client {
     public static int ack_num = 0; // acknowledgement number
     public static Integer expectedAckNum = -1;
     public static Boolean isRetransmitted = false;
+    
+    //variables for timer thread
+    public long cur_time;
+    public static long TIMEOUT = 4000;
 
     // global filed for timeout and related computation;
     public static long timeout = (long)(5 * Math.pow(10, 9)); // unit is nanosecond;
@@ -311,7 +315,9 @@ class Client_InThread extends Thread {
                 System.out.print("");
                 byte[] data_received = new byte[24];
                 DatagramPacket packet_received = new DatagramPacket(data_received, data_received.length);
+                System.out.println("Before the recieve ");
                 Client.socket.receive(packet_received);
+                System.out.println("Packet received ; moving forwards"); 
                 byte[] ack_data = packet_received.getData();
                 if (getFlag(ack_data).get(2)) {
                     updateTimeout(getTimestamp(ack_data), System.nanoTime(), getSequenceNumber(ack_data));
@@ -353,7 +359,7 @@ class Client_InThread extends Thread {
                         Client.lastacked = (int)Math.ceil((double)(ack_received - 1) / mtu_data) - 1;
                         }
                         System.out.println("lastacked " + Client.lastacked);
-                        if (Client.counter == 3) {
+                        if (Client.counter >= 3) {
                             Client.counter = 0;
                             Client.retransmission ++;
                             synchronized(Client.lastsent) {

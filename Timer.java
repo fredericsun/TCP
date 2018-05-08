@@ -8,15 +8,18 @@ public class Timer extends Thread {
         
     }
     public void run() {
-    	
-//        if (System.currentTimeMillis() - cur_time < TIMEOUT) {
-//            sleep(1000);
-//        }
-//        if (System.nanoTime() - cur_time >= Client.timeout) {
-////            Client.nextbytetosend = cur_seq;
-////            Client.lastsent = last_sent;
-////            Client.counter = 0;
-////            Client.retransmission++;
-//        }
+    		while(true) {
+	        if (System.currentTimeMillis() - cur_time < TIMEOUT) {
+	            try {
+					sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+	        else {
+	        	Client.isRetransmitted = true;
+	        }
+    		}
     }
 }
