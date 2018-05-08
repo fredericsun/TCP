@@ -169,7 +169,7 @@ class Client_OutThread extends Thread {
             try {
                 if (Client.sws >= (data_length + 24)) {
                     System.out.print("");
-                    Timer timer = new Timer(System.nanoTime(), Client.nextbytetosend, Client.lastsent, Client.lastacked);
+                    //Timer timer = new Timer(System.nanoTime(), Client.nextbytetosend, Client.lastsent, Client.lastacked);
                     System.out.printf("snd %d ---D %d %d %d \n", timestamp, Client.nextbytetosend, data_length, Client.ack_num);
                     Client.amount_data_transferred += data_length;
                     Client.num_packet_sent++;
@@ -181,7 +181,7 @@ class Client_OutThread extends Thread {
                     }
                     Client.lastsent += 1;
                     Client.socket.send(packet);
-                    timer.start();
+                    //timer.start();
                     System.out.println("lastsent " + Client.lastsent);
                     System.out.println("lastacked " + Client.lastacked);
                     System.out.println("Window " + Client.sws);
