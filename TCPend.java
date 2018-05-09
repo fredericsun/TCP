@@ -46,7 +46,7 @@ public class TCPend {
                 int sws = Integer.parseInt(args[5]);
                 try {
                     DatagramSocket socket = new DatagramSocket(port_num);
-                    TCPReciever receiver= new TCPReciever( mtu, socket);
+                    TCPReciever receiver= new TCPReciever(mtu,socket);
                     receiver.handshake();
                     receiver.recieve();
                 }

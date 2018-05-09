@@ -19,7 +19,7 @@ public class TCPReciever {
 	
 	public TCPReciever(int mtu, DatagramSocket socket) {
         this.mtu = mtu;
-        Server.socket = socket;
+        this.socket = socket;
         this.receivedBuffer = new HashMap<Integer,byte[]>();
 	}
 
