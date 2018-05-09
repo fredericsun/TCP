@@ -82,7 +82,7 @@ public class TCPReciever {
 		}
 	}
 	
-	public void handshake() throws IOException {
+	public void handshake() throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		TCPPacket firstPacket = new TCPPacket();
 		TCPPacket secondPacket= new TCPPacket();
@@ -100,8 +100,9 @@ public class TCPReciever {
 	        	}
         	} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.out.println("No incoming packets");
+			Thread.sleep(1000);
 		}
 		}
         secondPacket = recData(); // receive the last ACK. No need to do anything with the packet
