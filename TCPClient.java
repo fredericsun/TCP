@@ -72,6 +72,7 @@ public class TCPClient {
                 bytesLoaded++;
             }
             dataPackets.add(new TCPPacket(seqNum, 1, System.nanoTime(), dataLoadedForSeg, (short) 0, dataToBeSent, "D"));
+            System.out.println("Flag at the time of creation : "+dataPackets.get(segCount));
             dataPackets.get(segCount).serialize(); //computes the checksum
             seqNum += dataLoadedForSeg;
         }
@@ -120,7 +121,7 @@ public class TCPClient {
 		byte[] temp = new byte[mtu];
         DatagramPacket ackpacket = new DatagramPacket(temp, temp.length);
         socket.receive(ackpacket);
-        TCPPacket ACKPacket = new TCPPacket(0, 0, 0, 0, (short) 0, null, "E");
+        TCPPacket ACKPacket = new TCPPacket(0, 0, 0, 0, (short) 0, null, "");
         ACKPacket = ACKPacket.deserialize(ackpacket.getData());
         System.out.println("rcv " + System.nanoTime() / 1000000000 + " " + ACKPacket.getFlags() +
                 " " + ACKPacket.getSeq() + " " + ACKPacket.getData().length + " " + ACKPacket.getAck());

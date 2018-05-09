@@ -29,17 +29,21 @@ public class TCPPacket {
 	}
 
 	public void setFlags(String flag) {
-		int len = Integer.reverse(this.length);
+		//int len = Integer.reverse(this.length);
+		int len = this.length;
 		if (flag.contains("A")) len += 1;
 		if (flag.contains("F")) len += 2;
 		if (flag.contains("S")) len += 4;
-		this.length = Integer.reverse(len);
+		//this.length = Integer.reverse(len);
+		this.length = len;
 	}
 	
 	public String getFlags() {
-		int len = Integer.reverse(this.length);
+		//int len = Integer.reverse(this.length);
+		int len = this.length;
 		int relBits = len % 8; //get the relevant bits
 		String flag = "";
+		System.out.println("Relevant Bits : "+relBits);
 		switch(relBits){
         case 0:
             flag = "---D"; // flag for data
@@ -159,7 +163,8 @@ public class TCPPacket {
         byteBuffer.putInt(this.seq);                     //index: 0 - 3
         byteBuffer.putInt(this.ack);               //index: 4 - 7
         byteBuffer.putLong(this.timsStamp);                   //index: 8 - 15
-        byteBuffer.putInt(Integer.reverse(this.length));      //index: 16 - 19
+        //byteBuffer.putInt(Integer.reverse(this.length));      //index: 16 - 19
+        byteBuffer.putInt((this.length));
         short Zero = 0;                            //concat 16 bits of zeros
         byteBuffer.putShort(Zero);                         //index: 20 - 21
         this.checksum = computeChecksum(this.seq);
@@ -212,7 +217,8 @@ public class TCPPacket {
         this.seq = byteBuffer.getInt();
         this.ack= byteBuffer.getInt();
         this.timsStamp= byteBuffer.getLong();
-        this.length = Integer.reverse(byteBuffer.getInt());
+        this.length = (byteBuffer.getInt());
+        //this.length = Integer.reverse(byteBuffer.getInt());
         short zero = byteBuffer.getShort();
         assert(zero == 0);
         this.checksum = byteBuffer.getShort();
