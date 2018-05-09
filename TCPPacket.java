@@ -111,7 +111,9 @@ public class TCPPacket {
 	 * @return the length
 	 */
 	public int getLength() {
-		return length;
+		int rShift = this.length << 3;
+        int lShift = rShift >> 3;
+        return lShift;
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class TCPPacket {
 	 * @return the data
 	 */
 	public byte[] getData() {
-		return data;
+		return this.data;
 	}
 
 	/**
