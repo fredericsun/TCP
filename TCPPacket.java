@@ -43,7 +43,7 @@ public class TCPPacket {
 		//int len = this.length;
 		int relBits = len % 8; //get the relevant bits
 		String flag = "";
-		System.out.println("Relevant Bits : "+relBits);
+		//System.out.println("Relevant Bits : "+relBits);
 		switch(relBits){
         case 0:
             flag = "---D"; // flag for data
@@ -208,7 +208,7 @@ public class TCPPacket {
     public TCPPacket deserialize(byte[] recUnit) {
     	
     	//TCPPacket packet = new TCPPacket();
-    	System.out.println("In the deserialize function");
+    	//System.out.println("In the deserialize function");
     	ByteBuffer byteBuffer = ByteBuffer.wrap(recUnit, 0, recUnit.length);
     		if (byteBuffer == null) {
     			System.out.println("No data in buffer");
@@ -223,7 +223,7 @@ public class TCPPacket {
         assert(zero == 0);
         this.checksum = byteBuffer.getShort();
         this.data = new byte[this.getLength()];
-        System.out.println("RecUnit Length : "+ recUnit.length + " data length : "+ this.getLength());
+        //System.out.println("RecUnit Length : "+ recUnit.length + " data length : "+ this.getLength());
         try {
 	        for(int i = 0; i < this.getLength(); i++) {
 	            this.data[i] = byteBuffer.get();
