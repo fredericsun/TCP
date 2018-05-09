@@ -5,7 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class TCPend {
-	public static void main(String args []) {
+	public static void main(String args []) throws InterruptedException {
         if (args.length == 12) {
             if (!args[0].equals("-p") || !args[2].equals("-s") || !args[4].equals("-a")
                     || !args[6].equals("-f") || !args[8].equals("-m") || !args[10].equals("-c")) {
