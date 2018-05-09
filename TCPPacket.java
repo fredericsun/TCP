@@ -201,7 +201,7 @@ public class TCPPacket {
     public TCPPacket deserialize(byte[] recUnit) {
     	
     	//TCPPacket packet = new TCPPacket();
-    	
+    	System.out.println("In the deserialize function");
     	ByteBuffer byteBuffer = ByteBuffer.wrap(recUnit, 0, recUnit.length);
     		if (byteBuffer == null) {
     			System.out.println("No data in buffer");
