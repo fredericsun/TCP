@@ -200,20 +200,20 @@ public class TCPPacket {
     	
     	//TCPPacket packet = new TCPPacket();
     	
-    	ByteBuffer byteBuffer = ByteBuffer.wrap(data, 0, data.length);
-        int sequence = byteBuffer.getInt();
-        int acknowledgment= byteBuffer.getInt();
-        long time= byteBuffer.getLong();
-        int len = byteBuffer.getInt();
+    	ByteBuffer byteBuffer = ByteBuffer.wrap(recUnit, 0, recUnit.length);
+        this.seq = byteBuffer.getInt();
+        this.ack= byteBuffer.getInt();
+        this.timsStamp= byteBuffer.getLong();
+        this.length = byteBuffer.getInt();
         short zero = byteBuffer.getShort();
         assert(zero == 0);
-        short chcksum = byteBuffer.getShort();
-        byte[] Data = new byte[this.getLength()];
+        this.checksum = byteBuffer.getShort();
+        this.data = new byte[this.getLength()];
         for(int i = 0; i < this.getLength(); i++) {
             this.data[i] = byteBuffer.get();
         }
-        TCPPacket packet = new TCPPacket(sequence, acknowledgment, time, len, chcksum, Data,"" );
-        return packet;
+        //TCPPacket packet = new TCPPacket(sequence, acknowledgment, time, len, chcksum, Data,"" );
+        return this;
     }
     
 }
