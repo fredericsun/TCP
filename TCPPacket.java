@@ -216,9 +216,15 @@ public class TCPPacket {
         this.checksum = byteBuffer.getShort();
         this.data = new byte[this.getLength()];
         System.out.println("RecUnit Length : "+ recUnit.length + " data length : "+ this.getLength());
-        for(int i = 0; i < this.getLength(); i++) {
-            this.data[i] = byteBuffer.get();
-            String str = new String(this.data);
+        try {
+	        for(int i = 0; i < this.getLength(); i++) {
+	            this.data[i] = byteBuffer.get();
+	            String str = new String(this.data);
+	        }
+        }
+        catch (Exception e) {
+        		System.out.println("RecUnit Length : "+ recUnit.length + " data length : "+ this.getLength());
+        		e.printStackTrace();
         }
         //TCPPacket packet = new TCPPacket(sequence, acknowledgment, time, len, chcksum, Data,"" );
         return this;
