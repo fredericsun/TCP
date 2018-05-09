@@ -215,6 +215,7 @@ public class TCPPacket {
         assert(zero == 0);
         this.checksum = byteBuffer.getShort();
         this.data = new byte[this.getLength()];
+        System.out.println("RecUnit Length : "+ recUnit.length + " data length : "+ this.getLength());
         for(int i = 0; i < this.getLength(); i++) {
             this.data[i] = byteBuffer.get();
             String str = new String(this.data);
