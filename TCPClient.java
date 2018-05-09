@@ -73,6 +73,7 @@ public class TCPClient {
             }
             dataPackets.add(new TCPPacket(seqNum, 1, System.nanoTime(), dataLoadedForSeg, (short) 0, dataToBeSent, "D"));
             System.out.println("Flag at the time of creation : "+dataPackets.get(segCount).getFlags());
+            
             dataPackets.get(segCount).serialize(); //computes the checksum
             seqNum += dataLoadedForSeg;
         }
@@ -157,6 +158,7 @@ public class TCPClient {
 						tempPacket.setTimsStamp(System.nanoTime());
 						try {
 							sendDataPacket(tempPacket);
+							System.out.println("Key for packNotAck : "+tempPacket.getSeq());
 							packetsNotAcked.put(tempPacket.getSeq(),tempPacket);
 							packetsSent++;
 						} catch (IOException e) {
@@ -196,15 +198,16 @@ public class TCPClient {
 				totalAcks += 1;
 				updateTimeOut(recPacket);
 				timeOutMap.remove(recPacket.getAck() - 1);
-				lock.lock();
+				//lock.lock();
 				packetsNotAcked.remove(recPacket.getAck() - 1);
+				System.out.println("Removed the packet from timeoutMap and packetsNotAcked");
 				ackedPackets.add(recPacket.getAck());
 			}
 			catch(IOException e) {
 				e.printStackTrace();
 			}
 			finally {
-				lock.unlock();
+				//lock.unlock();
 			}
 		}
 		//sendDataThread.join();
@@ -233,6 +236,7 @@ public class TCPClient {
         packet.serialize();
         DatagramPacket pack = new DatagramPacket(packet.serialize(), 0, packet.getLength() + 24, this.inet_remote_ip, this.remote_port);
         timeOutMap.put(packet.getSeq(), this.timeout + System.nanoTime());
+        System.out.println("Key for retransmitPack : "+ packet.getSeq());
         if(retransmitPackets.containsKey(packet.getSeq())) {
         		if(retransmitPackets.get(packet.getSeq()) > 16) {
         			System.out.println("Number of retransmission exceeded the prescribed number");
