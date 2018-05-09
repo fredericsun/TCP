@@ -150,6 +150,7 @@ public class TCPClient {
 					lock.lock(); // need to use locks because .size() of concurrentHashMap is not very accurate unless the full things is locked.
 					if(packetsNotAcked.size() < swsPackets) { //can be changed to sws for testing
 						tempPacket = dataPackets.get(packetsSent);
+						System.out.println("Flag of the packet : " + tempPacket.getFlags());
 						dataLength = dataLength + tempPacket.getData().length;
 						numPackets = numPackets + 1;
 						tempPacket.setTimsStamp(System.nanoTime());
