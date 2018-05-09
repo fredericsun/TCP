@@ -77,7 +77,7 @@ public class TCPClient {
         }
 	}
 
-	public void handshake() throws IOException {
+	public void handshake() throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		
 		
@@ -108,7 +108,8 @@ public class TCPClient {
         thread1.start();
         while(!handShook) {
             sendEmptyPacket("S", 0); // send the SIN packet until you get a response
-            }
+            Thread.sleep(1000);
+        	}
         
         
 	}

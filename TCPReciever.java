@@ -84,21 +84,26 @@ public class TCPReciever {
 	
 	public void handshake() throws IOException {
 		// TODO Auto-generated method stub
-		TCPPacket firstPacket;
-		TCPPacket secondPacket;
-        firstPacket = recData(); //receive SYN. The function recData() stalls until it receives the a packet                                                                 
+		TCPPacket firstPacket = new TCPPacket();
+		TCPPacket secondPacket= new TCPPacket();
+		while(true) {
+         //receive SYN. The function recData() stalls until it receives the a packet                                                                 
         try {
+        		firstPacket = recData();
 	        	if (firstPacket.getFlags().contains("S")) {
 				sendAcknowledgement("SA", firstPacket.seq+1, firstPacket.timsStamp); // Send ACK + SYN
+				break;
 	        	}
 	        	else {
 	        		System.out.println("First packet is not SYN, Handshake cannot proceed. Exiting");
 	        		System.exit(1);
 	        	}
-        	} catch (IOException e) {
+        	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}     
+			System.out.println("No incoming packets");
+		}
+		}
         secondPacket = recData(); // receive the last ACK. No need to do anything with the packet
 		
 	}
