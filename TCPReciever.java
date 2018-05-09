@@ -42,7 +42,7 @@ public class TCPReciever {
 				sendAcknowledgement("A", recPacket.getSeq() , recPacket.getTimsStamp());
 				continue;
 			}
-			ackNum = recPacket.getSeq()+1; //next expected 
+			ackNum = recPacket.getSeq()+recPacket.getLength(); //next expected 
 			sequence = recPacket.getSeq();
 			if (recPacket.getFlags().contains("D")) {
 				receivedBuffer.put(sequence, recPacket.getData());
