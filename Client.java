@@ -24,11 +24,11 @@ public class Client {
     public static Integer lastsent = -1; // pointer for sender_buffer;
     public static Integer nextbytetosend = 0; // sequence number
     public static int ack_num = 0; // acknowledgement number
-    public static Integer expectedAckNum = -1;
+    public static Integer expectedAckNum ;
     public static Boolean isRetransmitted = false;
     
     //variables for timer thread
-    public long cur_time;
+    public static long cur_time;
     public static long TIMEOUT = 4000;
 
     // global filed for timeout and related computation;
@@ -52,6 +52,7 @@ public class Client {
         this.remote_port = remote_port;
         this.mtu_data = mtu - 24;
         this.cur_time = System.currentTimeMillis();
+        this.expectedAckNum = mtu - 24 +1;
 
         //variables that need to be shared
         socket.connect(inet_remote_ip, remote_port);
@@ -308,6 +309,26 @@ class Client_InThread extends Thread {
         //initialize parameters
         this.port_num = port_num;
         this.mtu_data = mtu_data;
+        Thread someThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	Client.cur_time = System.currentTimeMillis();
+            	while(true) {
+	               try {
+	                        if (System.currentTimeMillis() - Client.cur_time < Client.TIMEOUT) Thread.sleep(1000);
+	                        else {
+	                        	Client.isRetransmitted = true;
+
+	                        }
+	                } catch (InterruptedException e) {
+	                        // TODO Auto-generated catch block                                                
+	                        e.printStackTrace();
+	                }
+	            }
+            }
+        });
+        someThread.setDaemon(true);
+        someThread.start();
     }
 
     public void run() {
@@ -350,6 +371,10 @@ class Client_InThread extends Thread {
                         Client.sws = Client.sws + mtu_data + 24;
                         }
                         int ack_received = getAcknowledgment(ack_data);
+                        if (ack_received >= Client.expectedAckNum) {
+                        	Client.cur_time = System.currentTimeMillis();
+                        	Client.expectedAckNum = ack_received + mtu_data + 1;
+                        }
                         if (Client.last_ack_num_received == ack_received) {
                             Client.duplicate_ack++;
                             Client.counter++;
