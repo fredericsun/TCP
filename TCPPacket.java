@@ -29,18 +29,18 @@ public class TCPPacket {
 	}
 
 	public void setFlags(String flag) {
-		//int len = Integer.reverse(this.length);
-		int len = this.length;
+		int len = Integer.reverse(this.length);
+		//int len = this.length;
 		if (flag.contains("A")) len += 1;
 		if (flag.contains("F")) len += 2;
 		if (flag.contains("S")) len += 4;
-		//this.length = Integer.reverse(len);
-		this.length = len;
+		this.length = Integer.reverse(len);
+		//this.length = len;
 	}
 	
 	public String getFlags() {
-		//int len = Integer.reverse(this.length);
-		int len = this.length;
+		int len = Integer.reverse(this.length);
+		//int len = this.length;
 		int relBits = len % 8; //get the relevant bits
 		String flag = "";
 		System.out.println("Relevant Bits : "+relBits);

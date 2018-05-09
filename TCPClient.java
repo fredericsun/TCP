@@ -72,7 +72,7 @@ public class TCPClient {
                 bytesLoaded++;
             }
             dataPackets.add(new TCPPacket(seqNum, 1, System.nanoTime(), dataLoadedForSeg, (short) 0, dataToBeSent, "D"));
-            System.out.println("Flag at the time of creation : "+dataPackets.get(segCount));
+            System.out.println("Flag at the time of creation : "+dataPackets.get(segCount).getFlags());
             dataPackets.get(segCount).serialize(); //computes the checksum
             seqNum += dataLoadedForSeg;
         }
