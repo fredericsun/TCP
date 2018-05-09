@@ -117,7 +117,7 @@ public class TCPClient {
 
 	private TCPPacket receiveACKPacket() throws IOException {
 		// TODO Auto-generated method stub
-		byte[] temp = new byte[24];
+		byte[] temp = new byte[mtu];
         DatagramPacket ackpacket = new DatagramPacket(temp, temp.length);
         socket.receive(ackpacket);
         TCPPacket ACKPacket = new TCPPacket(0, 0, 0, 0, (short) 0, null, "E");
@@ -128,7 +128,8 @@ public class TCPClient {
 	}
 	
 	private void sendEmptyPacket(String flag, int ack) throws IOException {
-        TCPPacket segment = new TCPPacket(0, ack, System.nanoTime(), 0, (short) 0, new byte[0], flag);
+		byte[] emptyBuffer = new byte[0];
+        TCPPacket segment = new TCPPacket(0, ack, System.nanoTime(), 0, (short) 0, emptyBuffer, flag);
         segment.serialize(); 
         DatagramPacket packet = new DatagramPacket(segment.serialize(), 0, segment.getLength() + 24, this.inet_remote_ip, this.remote_port);
         //DatagramPacket packet = new DatagramPacket(packet_data, packet_data.length);
