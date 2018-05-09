@@ -201,6 +201,10 @@ public class TCPPacket {
     	//TCPPacket packet = new TCPPacket();
     	
     	ByteBuffer byteBuffer = ByteBuffer.wrap(recUnit, 0, recUnit.length);
+    		if (byteBuffer == null) {
+    			System.out.println("No data in buffer");
+    			System.exit(0);
+    		}
         this.seq = byteBuffer.getInt();
         this.ack= byteBuffer.getInt();
         this.timsStamp= byteBuffer.getLong();
