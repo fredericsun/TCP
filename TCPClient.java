@@ -192,6 +192,7 @@ public class TCPClient {
 		while(ackedPackets.size() < dataPackets.size()) {
 			try {
 				TCPPacket recPacket = receiveACKPacket();
+				System.out.println("Got a data packet!");
 				totalAcks += 1;
 				updateTimeOut(recPacket);
 				timeOutMap.remove(recPacket.getAck() - 1);
@@ -206,7 +207,7 @@ public class TCPClient {
 				lock.unlock();
 			}
 		}
-		sendDataThread.join();
+		//sendDataThread.join();
 		numDuplicateAck = totalAcks - ackedPackets.size();
 		
 		
