@@ -100,7 +100,7 @@ public class TCPReciever {
 	        	}
         	} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			e.printStackTrace();
 			System.out.println("No incoming packets");
 			Thread.sleep(1000);
 		}
