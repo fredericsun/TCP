@@ -100,6 +100,7 @@ public class TCPClient {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				System.out.println("HandShake finished");
                 handShook = true;
             }
 

@@ -217,6 +217,7 @@ public class TCPPacket {
         this.data = new byte[this.getLength()];
         for(int i = 0; i < this.getLength(); i++) {
             this.data[i] = byteBuffer.get();
+            String str = new String(this.data);
         }
         //TCPPacket packet = new TCPPacket(sequence, acknowledgment, time, len, chcksum, Data,"" );
         return this;
