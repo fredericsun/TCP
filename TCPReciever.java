@@ -25,7 +25,7 @@ public class TCPReciever {
 
 
 
-	public void recieve() throws IOException {
+	public void receive() throws IOException {
 		// TODO Auto-generated method stub
 		this.isRunning = true;
 		int sequence;
